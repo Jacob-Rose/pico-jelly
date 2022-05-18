@@ -44,8 +44,8 @@ struct FPaletteCycleProperties
 {
   bool ShouldAutoSwapPalettes = true;
   float TimeBetweenPaletteSwapping = 12.0f; // in seconds
-  int SinWaveWidth = 4;
 
+  // https://gist.github.com/kriegsman/1f7ccbbfa492a73c015e
   // You can control how many changes are made in each call:
   //   - the default of 24 is a good balance
   //   - meaningful values are 1-48.  1=veeeeeeeery slow, 48=quickest
