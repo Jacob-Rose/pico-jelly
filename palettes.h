@@ -6,7 +6,11 @@ enum EPalette : uint8_t
   OceanFoam,
   CaliSunset,
   Rainbow,
+  PurpleFly,
+  Clouds,
+  Ocean,
   Max
+  // To remove palettes from the run without removing their code, put them after max
 };
 
 // Gradient palette "bhw2_turq_gp", originally from
@@ -14,7 +18,7 @@ enum EPalette : uint8_t
 // converted for FastLED with gammas (2.6, 2.2, 2.5)
 // Size: 28 bytes of program space.
 
-DEFINE_GRADIENT_PALETTE( gp_ocean_foam ) {
+DEFINE_GRADIENT_PALETTE( ocean_foam_gp ) {
     0,   1, 33, 95,
    38,   1,107, 37,
    76,  42,255, 45,
@@ -26,10 +30,22 @@ DEFINE_GRADIENT_PALETTE( gp_ocean_foam ) {
 // converted for FastLED with gammas (2.6, 2.2, 2.5)
 // Size: 12 bytes of program space.
 
-DEFINE_GRADIENT_PALETTE( gp_cali_sunset ) {
+DEFINE_GRADIENT_PALETTE( cali_sunset_gp ) {
     0, 227,101,  3,
   117, 194, 18, 19,
   255,  92,  8,192};
+
+// Gradient palette "purplefly_gp", originally from
+// http://soliton.vm.bytemark.co.uk/pub/cpt-city/rc/tn/purplefly.png.index.html
+// converted for FastLED with gammas (2.6, 2.2, 2.5)
+// Size: 16 bytes of program space.
+
+DEFINE_GRADIENT_PALETTE( purplefly_gp ) {
+    0,   0,  0,  0,
+   63, 239,  0,122,
+  191, 252,255, 78,
+  255,   0,  0,  0};
+
 
 
 void SetPaletteFromEnum(CRGBPalette16& OutPalette, EPalette PaletteRequested)
@@ -37,13 +53,22 @@ void SetPaletteFromEnum(CRGBPalette16& OutPalette, EPalette PaletteRequested)
   switch(PaletteRequested)
   {
     case EPalette::OceanFoam:
-      OutPalette = gp_ocean_foam;
+      OutPalette = ocean_foam_gp;
       break;
     case EPalette::CaliSunset:
-      OutPalette = gp_cali_sunset;
+      OutPalette = cali_sunset_gp;
+      break;
+    case EPalette::PurpleFly:
+      OutPalette = purplefly_gp;
       break;
     case EPalette::Rainbow:
       OutPalette = RainbowColors_p;
+      break;
+    case EPalette::Clouds:
+      OutPalette = CloudColors_p;
+      break;
+    case EPalette::Ocean:
+      OutPalette = OceanColors_p;
       break;
   }
 }
