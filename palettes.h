@@ -1,10 +1,12 @@
 #include <FastLED.h>
 
-enum EPalette
+
+enum EPalette : uint8_t
 {
   OceanFoam,
   CaliSunset,
-  Rainbow
+  Rainbow,
+  Max
 };
 
 // Gradient palette "bhw2_turq_gp", originally from

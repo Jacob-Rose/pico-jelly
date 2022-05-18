@@ -42,7 +42,7 @@ CRGB headLEDs[3][HEAD_LED_COUNT];
 struct FPaletteCycleVars
 {
   bool ShouldAutoSwapPalettes = true;
-  float TimeBetweenPaletteSwapping = 2.0f;
+  float TimeBetweenPaletteSwapping = 5.0f;
 
   absolute_time_t TimeForNextPaletteSwap;
 } PaletteCycleVars;
@@ -57,11 +57,9 @@ uint8_t indexOffset = 0;
 
 EPattern currentPattern = EPattern::PaletteCycle;
 
-
-CRGBPalette16 currentPalette = gp_ocean_foam;
+CRGBPalette16 currentPalette(CRGB::Black);
+CRGBPalette16 targetPalette = gp_ocean_foam;
 EPalette currentPaletteType = EPalette::OceanFoam;
-EPalette targetPaletteType = EPalette::OceanFoam;
-
 
 // DA JELLY TOTEM CODE
 
@@ -86,15 +84,13 @@ void setup()
   FastLED.addLeds<LED_TYPE, HEADSIDE3PIN, COLOR_ORDER>(headLEDs[2], 0, HEAD_TOP_SIDE_LED_COUNT + HEAD_BOTTOM_SIDE_LED_COUNT);
 #pragma endregion
 
-  FastLED.setBrightness(64);
+  FastLED.setBrightness(255);
 
   toggleOnboardLED(true);
 
 
   PaletteCycleVars.TimeForNextPaletteSwap = make_timeout_time_ms(static_cast<uint32_t>(PaletteCycleVars.TimeBetweenPaletteSwapping * 1000));
 }
-
-
 
 void loop() {
   // put your main code here, to run repeatedly:
@@ -116,11 +112,28 @@ void loop() {
 
 void Update_PaletteCycle()
 {
+  
+  //cycle palettes on timer
+  if(absolute_time_diff_us(get_absolute_time(), PaletteCycleVars.TimeForNextPaletteSwap) < 0)
+  {
+    currentPaletteType = (EPalette)(currentPaletteType + 1);
+    if(currentPaletteType == EPalette::Max)
+    {
+      currentPaletteType = (EPalette)0;
+    }
+    SetPaletteFromEnum(targetPalette, currentPaletteType);
+    Serial.write(currentPaletteType);
+    PaletteCycleVars.TimeForNextPaletteSwap = make_timeout_time_ms(static_cast<uint32_t>(PaletteCycleVars.TimeBetweenPaletteSwapping * 1000));
+  }
+
+  uint8_t maxChanges = 40; 
+  nblendPaletteTowardPalette(currentPalette, targetPalette, maxChanges);
+
   for(int legIndex = 0; legIndex < NUM_LEGS; ++legIndex)
   {
     for(int ledIndex = 0; ledIndex < LEG_LED_COUNT; ++ledIndex)
     {
-      legLEDs[legIndex][ledIndex] = ColorFromPalette( currentPalette, indexOffset + sin8(ledIndex*8), 255);
+      legLEDs[legIndex][ledIndex] = ColorFromPalette( currentPalette, indexOffset + sin8(ledIndex*4), 255);
     }
   }
 
@@ -128,13 +141,10 @@ void Update_PaletteCycle()
   {
     for(int ledIndex = 0; ledIndex < HEAD_LED_COUNT; ++ledIndex)
     {
-      headLEDs[legIndex][ledIndex] = ColorFromPalette( currentPalette, indexOffset + sin8(ledIndex*8), 255);
+      headLEDs[legIndex][ledIndex] = ColorFromPalette( currentPalette, indexOffset + sin8(ledIndex*4), 255);
     }
   }
-
-
 }
-
 
 void Update_HueCycle()
 {

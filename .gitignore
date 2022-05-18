@@ -1,0 +1,7 @@
+.theia/*
+.vs/*
+.vscode/*
+build/*
+
+#exporting build generates this file
+jelly_main.ino.rpipico.uf2
